@@ -6,9 +6,15 @@ use ApiPlatform\Core\Annotation\ApiResource;
 use App\Repository\PostRepository;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Serializer\Annotation\Groups;
+use Symfony\Component\Validator\Constraints\Length;
+use Symfony\Component\Validator\Constraints\Valid;
 
 #[ORM\Entity(repositoryClass: PostRepository::class)]
 #[ApiResource(
+    collectionOperations: [
+        'post',
+        'get'
+    ],
     itemOperations: [
         'put',
         'delete',
@@ -28,7 +34,10 @@ class Post
     private $id;
 
     #[ORM\Column(type: 'string', length: 255)]
-    #[Groups(['read:collection', 'write:Post'])]
+    #[
+        Groups(['read:collection', 'write:Post']),
+        Length(min: 5, groups: ['create:Post'])
+    ]
     private $title;
 
     #[ORM\Column(type: 'string', length: 255)]
@@ -46,13 +55,18 @@ class Post
     #[ORM\Column(type: 'datetime')]
     private  $updatedAt;
 
-    #[ORM\ManyToOne(targetEntity: Category::class, inversedBy: 'posts')]
-    #[Groups(['read:item', 'write:Post'])]
+    #[ORM\ManyToOne(targetEntity: Category::class, cascade: ['persist'], inversedBy: 'posts')]
+    #[
+        Groups(['read:item', 'write:Post']),
+        Valid
+    ]
     private $category;
 
-    /**
-     * @param $createdAt
-     */
+    public static function validationGroups(self $post): array
+    {
+        return ['create:Post'];
+    }
+
     public function __construct()
     {
         $this->createdAt = new \DateTimeImmutable();
