@@ -1,0 +1,1 @@
+Training project while following [grafikart tutos](https://grafikart.fr/tutoriels/api-platform-decouverte-1903#autoplay)
