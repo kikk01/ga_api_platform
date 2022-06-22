@@ -5,6 +5,7 @@ namespace App\OpenApi;
 use ApiPlatform\Core\OpenApi\Factory\OpenApiFactoryInterface;
 use ApiPlatform\Core\OpenApi\Model\Operation;
 use ApiPlatform\Core\OpenApi\Model\PathItem;
+use ApiPlatform\Core\OpenApi\Model\RequestBody;
 use ApiPlatform\Core\OpenApi\OpenApi;
 
 class OpenApiFactory implements OpenApiFactoryInterface
@@ -23,12 +24,85 @@ class OpenApiFactory implements OpenApiFactoryInterface
             }
         }
 
+        // ping route
         $openApi->getPaths()->addPath('/ping', new PathItem(
             null,
             'Ping',
             null,
             new Operation('ping-id', [], [], 'Répond')
         ));
+
+        // allow the authorize functionalities on api doc template
+        $schemas = $openApi->getComponents()->getSecuritySchemes();
+        $schemas['cookieAuth'] = new \ArrayObject([
+            'type' => 'apiKey',
+            'in' => 'cookie',
+            'name' => 'PHPSESSID'
+        ]);
+
+        // display cadena on all road
+        // $openApi = $openApi->withSecurity(['cookieAuth' => []]);
+
+        // login
+        $schemas = $openApi->getComponents()->getSchemas();
+        $schemas['Credentials'] = new \ArrayObject([
+            'type' => 'object',
+            'properties' => [
+                'username' => [
+                    'type' => 'string',
+                    'example' => 'john@doe.fr',
+                ],
+                'password' => [
+                    'type' => 'string',
+                    'example' => '0000'
+                ]
+            ]
+        ]);
+
+        $pathItem = new PathItem(
+            post: new Operation(
+                operationId: 'postApiLogin',
+                tags: ['Auth'],
+                responses: [
+                    '200' => [
+                        'description' => 'Utilisateur connecté',
+                        'content' => [
+                            'application/json' => [
+                                'schema' => [
+                                    '$ref' => '#/components/schemas/User-read.User'
+                                ]
+                            ]
+                        ]
+                    ]
+                ],
+                requestBody: new RequestBody(
+                    content: new \ArrayObject([
+                        'application/json' => [
+                            'schema' => [
+                                '$ref' => '#/components/schemas/Credentials'
+                            ]
+                        ]
+                    ])
+                )
+            )
+        );
+        $openApi->getPaths()->addPath('/api/login', $pathItem);
+
+        $pathItem = new PathItem(
+            post: new Operation(
+                operationId: 'postApiLogout',
+                tags: ['Auth'],
+                responses: [
+                    '204' => []
+                ]
+            )
+        );
+        $openApi->getPaths()->addPath('/api/logout', $pathItem);
+
+        // id not required
+        $meOperation = $openApi->getPaths()->getPath('/api/me')->getGet()->withParameters([]);
+        $mePathItem = $openApi->getPaths()->getPath('/api/me')->withGet($meOperation);
+        $openApi->getPaths()->addPath('/api/me', $mePathItem);
 
         return $openApi;
     }

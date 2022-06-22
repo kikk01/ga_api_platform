@@ -30,7 +30,10 @@
         "symfony/serializer": "6.1.*",
         "symfony/twig-bundle": "6.1.*",
         "symfony/validator": "6.1.*",
-        "symfony/yaml": "*"
+        "symfony/yaml": "*",
+        "johndoe": "5.2.*",
+        "azzeaze": "5.2*",
+        "ext-http": "*"
     },
     "config": {
         "allow-plugins": {
