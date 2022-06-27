@@ -22,7 +22,11 @@ use Symfony\Component\Validator\Constraints\Valid;
     ApiResource(
         collectionOperations: [
             'post',
-            'get',
+            'get' => [
+                'openapi_context' => [
+                    'security' => [['bearerAuth' => []]]
+                ]
+            ],
             'count' => [
                 'method' => 'GET',
                 'path' => 'posts/count',

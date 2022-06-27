@@ -16,17 +16,19 @@ class SecurityController extends AbstractController
     #[Route(path: '/api/login', name: 'api_login', methods: ['POST'])]
     public function apiLogin(#[CurrentUser] ?User $user,  Request $request): JsonResponse
     {
-        //return $this->json(["response" => json_decode($request->getContent(), true)]);
-        if ($user === null) {
+        return $this->json(["response" => json_decode($request->getContent(), true)]);
+
+        // for authentication json
+/*        if ($user === null) {
             return $this->json([
                 'message' => 'Not found',
             ], Response::HTTP_UNAUTHORIZED);
-        }
+        }*/
 
-        return $this->json([
+/*        return $this->json([
             'username' => $user->getUserIdentifier(),
             'roles' => $user->getRoles()
-        ]);
+        ]);*/
     }
 
     #[Route(path: '/logout', name: 'app_logout')]
@@ -41,7 +43,7 @@ class SecurityController extends AbstractController
         // if ($this->getUser()) {
         //     return $this->redirectToRoute('target_path');
         // }
-
+dd('test');
         // get the login error if there is one
         $error = $authenticationUtils->getLastAuthenticationError();
         // last username entered by the user

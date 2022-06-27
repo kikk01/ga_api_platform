@@ -89,6 +89,11 @@
       <excludeFolder url="file://$MODULE_DIR$/vendor/ramsey/collection" />
       <excludeFolder url="file://$MODULE_DIR$/vendor/ramsey/uuid" />
       <excludeFolder url="file://$MODULE_DIR$/vendor/brick/math" />
+      <excludeFolder url="file://$MODULE_DIR$/vendor/namshi/jose" />
+      <excludeFolder url="file://$MODULE_DIR$/vendor/lexik/jwt-authentication-bundle" />
+      <excludeFolder url="file://$MODULE_DIR$/vendor/stella-maris/clock" />
+      <excludeFolder url="file://$MODULE_DIR$/vendor/lcobucci/jwt" />
+      <excludeFolder url="file://$MODULE_DIR$/vendor/lcobucci/clock" />
     </content>
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />

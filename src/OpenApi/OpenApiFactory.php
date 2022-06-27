@@ -32,13 +32,24 @@ class OpenApiFactory implements OpenApiFactoryInterface
             new Operation('ping-id', [], [], 'Répond')
         ));
 
-        // allow the authorize functionalities on api doc template
-        $schemas = $openApi->getComponents()->getSecuritySchemes();
+        // -----------> allow the authorize functionalities on api doc template
+        // for authentication json
+/*        $schemas = $openApi->getComponents()->getSecuritySchemes();
         $schemas['cookieAuth'] = new \ArrayObject([
             'type' => 'apiKey',
             'in' => 'cookie',
             'name' => 'PHPSESSID'
+        ]);*/
+
+        // for authentication jwt
+        $schemas = $openApi->getComponents()->getSecuritySchemes();
+        $schemas['bearerAuth'] = new \ArrayObject([
+            'type' => 'http',
+            'scheme' => 'bearer',
+            'bearerFormat' => 'JWT'
         ]);
+
+        // <----------- end region allow the authorize functionalities on api doc template
 
         // display cadena on all road
         // $openApi = $openApi->withSecurity(['cookieAuth' => []]);
@@ -59,17 +70,27 @@ class OpenApiFactory implements OpenApiFactoryInterface
             ]
         ]);
 
+        $schemas['Token'] = new \ArrayObject([
+            'type' => 'object',
+            'properties' => [
+                'token' => [
+                    'type' => 'string',
+                    'readOnly' => true
+                ]
+            ]
+        ]);
+
         $pathItem = new PathItem(
             post: new Operation(
                 operationId: 'postApiLogin',
                 tags: ['Auth'],
                 responses: [
                     '200' => [
-                        'description' => 'Utilisateur connecté',
+                        'description' => 'Token JWT',
                         'content' => [
                             'application/json' => [
                                 'schema' => [
-                                    '$ref' => '#/components/schemas/User-read.User'
+                                    '$ref' => '#/components/schemas/Token'
                                 ]
                             ]
                         ]
